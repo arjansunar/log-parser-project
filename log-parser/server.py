@@ -30,7 +30,7 @@ def getDate():
 
 @app.route("/geolocation")
 def getGeoData():
-    file = open("geoData.json")
+    file = open("data/geoData.json")
     return json.load(file)
 
 
