@@ -23,3 +23,7 @@ __pycache__
 
 *.cfg
 *.txt
+
+node_modules
+*.json
+*js

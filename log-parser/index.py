@@ -1,6 +1,9 @@
 import re
 from collections import Counter
-
+import json
+# import time
+import concurrent.futures
+import multiprocessing as mp
 
 def matcher(line,regex):
     return re.findall(regex,line)
@@ -31,27 +34,53 @@ def getFile():
     log_file= open("access.log")
     return log_file
 
-    
+def parse_log(parser):
+    file = open("access.log")
+    result=[]
+    for line in file: 
+        res = parser(line)
+        if res: result.append(res[0])
+    return result
+
 def main ():
     log_file= open("access.log")
     clients=[]
     browsers=[]
     dates=[]
     systems=[]
-    for line in log_file:
-        ip = client_ip(line)
-        browser= browser_used(line)
-        date = date_time(line)
-        os = os_type(line)
-        if ip: clients.append(ip[0])
-        if browser: browsers.append(browser[0])
-        if date: dates.append(date[0])
-        if os: systems.append(os[0])
+    # start= time.perf_counter()
+
+    # using multiprocessing    
+    with concurrent.futures.ProcessPoolExecutor() as executor: 
+        f1=executor.submit(parse_log,client_ip)
+        f2=executor.submit(parse_log,browser_used)
+        f3=executor.submit(parse_log,date_time)
+        f4=executor.submit(parse_log,os_type)
+        clients= f1.result()
+        browsers= f2.result()
+        dates= f3.result()
+        systems= f4.result()
+
+
+    # end = time.perf_counter()
+    # print(f'clients: {clients}\nBrowsers: {browsers}\n dates: {dates}\n os: {systems}\n')
+    # print(f'took {end-start}secs')
+    file= open("data/client_ip.json","w")
+    file.write(json.dumps(dict(count(clients))))
+    file.close()
+
+    file= open("data/client_browser.json","w")
+    file.write(json.dumps(dict(count(browsers))))
+    file.close()
  
-    print(dict(count(clients)))
-    print(dict(count(browsers)))
-    print(dict(count(dates)))
-    print(dict(count(systems)))
+    file= open("data/client_os.json","w")
+    file.write(json.dumps(dict(count(systems))))
+    file.close()
+
+    file= open("data/client_date.json","w")
+    file.write(json.dumps(dict(count(dates))))
+    file.close()
+  
     log_file.close()
 
 if __name__ == '__main__':
