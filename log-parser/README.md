@@ -4,7 +4,9 @@
 > It uses **node js** to make asyncronous calls to a third party api to convert the IP addresses into geolocation data.  
 > **Flask** is used to create a rest api to serve the parsed data.
 
-The given file ![log file](images/log-file.png)
+### Log file
+
+![log file](images/log-file.png)
 
 ### Parsing by geolocation
 
