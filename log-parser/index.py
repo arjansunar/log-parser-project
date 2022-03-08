@@ -62,9 +62,7 @@ def main ():
         systems= f4.result()
 
 
-    # end = time.perf_counter()
-    # print(f'clients: {clients}\nBrowsers: {browsers}\n dates: {dates}\n os: {systems}\n')
-    # print(f'took {end-start}secs')
+
     file= open("data/client_ip.json","w")
     file.write(json.dumps(dict(count(clients))))
     file.close()
